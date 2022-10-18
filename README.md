@@ -10,7 +10,7 @@ Currently, only the "jest" framework is supported.
 # Usage:
 
 1. Import the library:<br>
-   `const testGenerator = require('./index.js')`
+   `const testGenerator = require('unit-test-script-generator')`
 
 2. Initialize the generator:<br>
    `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');`<br>

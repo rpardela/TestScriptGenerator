@@ -1,8 +1,8 @@
 const libToTest = require('./libtoTest.js');
-const testGenerator = require('./index.js')
+const testGenerator = require('unit-test-script-generator')
 
 console.log('START DEMO');
-const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', { testScriptsPath: './testXXX/' });
+const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');
 tg.generateTestForFunc(libToTest.sumFunc, 1, 3);
 tg.generateTestForFunc(libToTest.multiplyFunc, 1, 3);
 tg.generateTestForFunc(libToTest.eqFunc, 2, 3);
