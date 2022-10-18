@@ -17,7 +17,6 @@ logs/
 cfglogs/
 synclogs/
 old*/ 
-testScripts/
 coverage/
 
 bclicence*

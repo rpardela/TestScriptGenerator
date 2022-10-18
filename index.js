@@ -6,24 +6,24 @@ const JEST_PROVIDER = 'jest';
 let fileSuffix = '.' + Date.now() + '.test.js';
 let defaultTestScriptsPath = './testScripts/';
 let defaultModulePath = '../';
-let defaultTestProvider = JEST_PROVIDER;
+let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '0.6.1'
+    version = '0.0.1'
     testFileName
     fileNameIn
     generateFiles
     testScriptsPath
     modulePath
-    testProvider
+    testFramework
     /**
      * Generate file with unit test script
      * result file name: moduleName + .timestamp + .test.js, eg: libToTest.1666085133268.test.js
      * 
      * @param {boolean} generateFiles false if the result file should not be generated
-     * @param {string} moduleName module where are located called functions
-     * @param {object} options (optional) {testProvider = 'jest', testScriptsPath = './testScripts/', modulePath = '../'}
+     * @param {string} moduleName module where are located tested functions
+     * @param {object} options (optional) {testFramework = 'jest', testScriptsPath = './testScripts/', modulePath = '../'}
      * @returns 
      */
     constructor(generateFiles, moduleName, options = null) {
@@ -31,7 +31,7 @@ class TestScriptGenerator {
         if (!this.generateFiles) { return }
         this.testScriptsPath = defaultTestScriptsPath;
         this.modulePath = defaultModulePath;
-        this.testProvider = defaultTestProvider;
+        this.testFramework = defaultTestFramework;
 
         if (options?.testScriptsPath) {
             this.testScriptsPath = options.testScriptsPath
@@ -45,10 +45,10 @@ class TestScriptGenerator {
             this.modulePath = defaultModulePath
         }
 
-        if (options?.testProvider) {
-            this.testProvider = options.testProvider
+        if (options?.testFramework) {
+            this.testFramework = options.testFramework
         } else {
-            this.testProvider = defaultTestProvider
+            this.testFramework = defaulttestFramework
         }
 
         if (!fs.existsSync(this.testScriptsPath)) {
@@ -59,7 +59,7 @@ class TestScriptGenerator {
         this.testFileName = this.testScriptsPath + this.fileNameIn + fileSuffix;
         fs.rm(this.testFileName, () => { });
         fs.appendFileSync(this.testFileName, '// import "regenerator-runtime/runtime";' + '\n');
-        fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n');
+        fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
     }
 
     /**
@@ -78,7 +78,7 @@ class TestScriptGenerator {
         let comment = 'test function ' + name;
 
         let ret = '';
-        if (this.testProvider === JEST_PROVIDER) {
+        if (this.testFramework === JEST_PROVIDER) {
             let matcher = 'toBe';
             if (resultType === 'object') {
                 matcher = 'toEqual';
@@ -110,7 +110,7 @@ class TestScriptGenerator {
         let comment = 'async test function resolve ' + name;
 
         let ret = '';
-        if (this.testProvider === JEST_PROVIDER) {
+        if (this.testFramework === JEST_PROVIDER) {
             let matcher = 'toBe';
             if (resultType === 'object') {
                 matcher = 'toEqual';
@@ -146,7 +146,7 @@ class TestScriptGenerator {
         let comment = 'async test function reject ' + name;
 
         let ret = '';
-        if (this.testProvider === JEST_PROVIDER) {
+        if (this.testFramework === JEST_PROVIDER) {
             let matcher = 'toBe';
             if (resultType === 'object') {
                 matcher = 'toEqual';

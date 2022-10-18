@@ -1,14 +1,14 @@
 {
-  "name": "testprovider",
-  "version": "1.0.0",
+  "name": "unit-test-script-generator",
+  "version": "0.0.1",
   "description": "",
-  "main": "app.mjs",
+  "main": "index.js",
   "sourceType": "module",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Robert Pardela",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^8.25.0",
     "eslint-config-standard": "^17.0.0",
