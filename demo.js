@@ -1,5 +1,5 @@
 const libToTest = require('./libtoTest.js');
-const testGenerator = require('unit-test-script-generator')
+const testGenerator = require('unit-test-script-generator');// or index.js for development
 
 console.log('START DEMO');
 const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');
