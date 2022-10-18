@@ -18,7 +18,7 @@ Currently, only the "jest" framework is supported.
    **parameters:** <br>
    _generateFiles_ - false if the result file should not be generated.<br>
    _moduleName_ - module where are located tested functions<br>
-   _options_ - You can specify an optional configuration as the third parameter of the call:
+   **config** - You can specify an optional configuration as the third parameter of the call:<br>
    _testScriptPath_ - path to the folder where the test scripts will be saved<br>
    _modulePath_ - path to the location where the module whose functions you will test is located<br>
    _testFramework_ - framework that supports unit tests (currently only 'jest')<br>

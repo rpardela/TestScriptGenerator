@@ -1,6 +1,6 @@
 {
   "name": "unit-test-script-generator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Test script generator allows you to generate files containing unit test scripts",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "generator"
   ],
   "author": "Robert Pardela <[rpardela@gmail.com](mailto:rpardela@gmail.com)>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^8.25.0",
     "eslint-config-standard": "^17.0.0",
