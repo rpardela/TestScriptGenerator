@@ -22,7 +22,7 @@ Currently, only the "jest" framework is supported.
    _testScriptPath_ - path to the folder where the test scripts will be saved<br>
    _modulePath_ - path to the location where the module whose functions you will test is located<br>
    _testFramework_ - framework that supports unit tests (currently only 'jest')<br>
-   e.g.: `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testScriptPath: './testScripts', modulePath: '../core/'});`
+   e.g.: `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testScriptPath: './testScripts/', modulePath: '../core/'});`
 
 3. Call the function for which you want to generate a unit test: <br>
    example typical function call <br>

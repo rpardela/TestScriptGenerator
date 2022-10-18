@@ -29,27 +29,10 @@ class TestScriptGenerator {
     constructor(generateFiles, moduleName, options = null) {
         this.generateFiles = generateFiles;
         if (!this.generateFiles) { return }
-        this.testScriptsPath = defaultTestScriptsPath;
-        this.modulePath = defaultModulePath;
-        this.testFramework = defaultTestFramework;
 
-        if (options?.testScriptsPath) {
-            this.testScriptsPath = options.testScriptsPath
-        } else {
-            this.testScriptsPath = defaultTestScriptsPath
-        }
-
-        if (options?.modulePath) {
-            this.modulePath = options.modulePath
-        } else {
-            this.modulePath = defaultModulePath
-        }
-
-        if (options?.testFramework) {
-            this.testFramework = options.testFramework
-        } else {
-            this.testFramework = defaulttestFramework
-        }
+        this.testScriptsPath = (options?.testScriptsPath) ? options.testScriptsPath : defaultTestScriptsPath
+        this.modulePath = (options?.modulePath) ? options.modulePath : defaultModulePath
+        this.testFramework = (options?.testFramework) ? options.testFramework : defaultTestFramework
 
         if (!fs.existsSync(this.testScriptsPath)) {
             fs.mkdirSync(this.testScriptsPath);
@@ -70,19 +53,17 @@ class TestScriptGenerator {
     generateTestForFunc() {
         let { args, toPass, name } = prepareArguments(arguments, this.generateFiles, this.testFileName);
 
-        if (!this.generateFiles) { return arguments[0](...args); }
+        if (!this.generateFiles) { return arguments[0](...args); } // return original result
 
-        let resultOrg = arguments[0](...args);//eval(arguments[1](...args));//eval('() => {"' + arguments[0](...args) + '()"');
+        let resultOrg = arguments[0](...args);
         let { resultType, result } = prepareResult(resultOrg, this.testFileName);
 
         let comment = 'test function ' + name;
 
         let ret = '';
         if (this.testFramework === JEST_PROVIDER) {
-            let matcher = 'toBe';
-            if (resultType === 'object') {
-                matcher = 'toEqual';
-            }
+            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+
             ret = 'test("' + comment + '", () => { \n'
                 + 'expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
                 + '});' + '\n\n';
@@ -100,9 +81,9 @@ class TestScriptGenerator {
     async generateTestForFuncAsyncResolve() {
         let { args, toPass, name } = prepareArguments(arguments, this.generateFiles, this.testFileName);
 
-        if (!this.generateFiles) { return await arguments[0](...args); }
+        if (!this.generateFiles) { return await arguments[0](...args); } // return original result
 
-        let resultOrgTmp = await arguments[0](...args);//eval(arguments[1](...args));//eval('() => {"' + arguments[0](...args) + '()"');
+        let resultOrgTmp = await arguments[0](...args);
         let resultOrg = { result: resultOrgTmp };
 
         let { resultType, result } = prepareResult(resultOrg, this.testFileName);
@@ -111,10 +92,8 @@ class TestScriptGenerator {
 
         let ret = '';
         if (this.testFramework === JEST_PROVIDER) {
-            let matcher = 'toBe';
-            if (resultType === 'object') {
-                matcher = 'toEqual';
-            }
+            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+
             ret = 'test("' + comment + '", async () => {\n'
                 + ' await expect(' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
                 + '.resolves.' + matcher + '(' + result + ');\n'
@@ -133,7 +112,7 @@ class TestScriptGenerator {
     async generateTestForFuncAsyncReject() {
         let { args, toPass, name } = prepareArguments(arguments, this.generateFiles, this.testFileName);
 
-        if (!this.generateFiles) { return await arguments[0](...args); }
+        if (!this.generateFiles) { return await arguments[0](...args); } // return original result
 
         let resultOrg;
         await arguments[0](...args)
@@ -147,10 +126,8 @@ class TestScriptGenerator {
 
         let ret = '';
         if (this.testFramework === JEST_PROVIDER) {
-            let matcher = 'toBe';
-            if (resultType === 'object') {
-                matcher = 'toEqual';
-            }
+            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+
             ret = 'test("' + comment + '", async () => { \n'
                 + 'expect.assertions(1); \n'
                 + 'return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
@@ -159,7 +136,7 @@ class TestScriptGenerator {
         }
 
         fs.appendFileSync(this.testFileName, ret);
-        return resultOrg; // return oryginal result
+        return resultOrg; // return original result
     }
 
     getVersion = () => {
@@ -181,7 +158,7 @@ module.exports = {
 const prepareArguments = (argsLocal, generateFiles, testFileName) => {
     let args = [];
     let toPass = '';
-    //let argsLocal = arguments[0];
+
     for (let i = 1; i < argsLocal.length; i++) {
         let item = argsLocal[i];
         args.push(item);
@@ -194,31 +171,19 @@ const prepareArguments = (argsLocal, generateFiles, testFileName) => {
             } else if (typeof item === 'object' && item !== null) {
                 let itemObjectDef;
                 let objName = 'obj_' + uuid(10);
-
-                //let objTest = Object.create(item);
                 let objTest = item;
-
-                //itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest, getCircularReplacer()) + ';'
-                //itemObjectDef = 'const ' + objName + ' = ' + JSON.safeStringify(objTest, 0) + ';'
                 itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
                 fs.appendFileSync(testFileName, itemObjectDef + '\n');
                 toPass += objName;
-            } /*else if (isFunction(item)) {
-                toPass += item.toString();
-            }*/ else {
+            } else {
                 toPass += item;
             }
             toPass += ',';
-            /*if (i == 1) {
-                toPass += arguments[i];
-            } else {
-                toPass += ',' + arguments[i];
-            }*/
         }
     }
 
-    toPass = toPass.substring(0, toPass.length - 1); //usuwam ostatni przecinek
-    let nameTmp = argsLocal[0].name.split(' ');//biorę tylko drugą część        
+    toPass = toPass.substring(0, toPass.length - 1); // remove last comma
+    let nameTmp = argsLocal[0].name.split(' ');// gets only second part without 'bounded'        
     let name = '';
     if (nameTmp.length > 1) {
         name = nameTmp[1];
@@ -246,9 +211,6 @@ const prepareResult = (resultOrg, testFileName) => {
         let itemObjectDef;
         let objName = 'resObject_' + uuid(10);
         let objTest = resultOrg;
-
-        //itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest, getCircularReplacer()) + ';'
-        //itemObjectDef = 'const ' + objName + ' = ' + JSON.safeStringify(objTest, 0) + ';'
         itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
         fs.appendFileSync(testFileName, itemObjectDef + '\n');
         result = objName;
