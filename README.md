@@ -37,14 +37,14 @@ Currently, only the "jest" framework is supported.
    example call: <br>
    `await tg.generateTestForFuncAsyncResolve(libToTest.sumFunc, 1, 3);`
 
-   The functions that generate scripts (generateTestForFunc + Async) always return values like the original functions (tested). This allows you to permanently define script generation, and if you don't need scripts then set the 'generateFiles' parameter to **false**
+   The functions that generate scripts (generateTestForFunc + Async) always return values like the original (tested) functions. This allows you to permanently define script generation, and if you don't need scripts then set the 'generateFiles' parameter to **false**
 
 4. Run js file with test generator<br>
    `node demo.js`
 
    After running, you will get a new ....test.js file in the ./testScripts directory
 
-# <br>Demostration
+# <br>Example
 
 The _demo.js_ file contains a sample call to the script generator that runs on the _libToTest.js_ test library.
 
@@ -54,9 +54,8 @@ Now you can run unit tests with the "jest" command.
 
 <br>**demo.js**
 
-
 ```
-const testGenerator = require('unit-test-script-generator');// or index.js for development
+const testGenerator = require('unit-test-script-generator');
 const libToTest = require('./libtoTest.js');
 
 console.log('START DEMO');
@@ -98,8 +97,8 @@ module.exports = {
 }
 ```
 
-
 <br>**Result (generated script)**
+
 ```
 const libToTest = require("../libToTest");
 
@@ -136,8 +135,6 @@ test("test function eqFuncObj", () => {
     expect(libToTest.eqFuncObj(obj_qfoc1fhz2, obj_69wogani9)).toEqual(resObject_ae3pdah5p);
 });
 ```
-
-
 
 # <br>Problems
 
