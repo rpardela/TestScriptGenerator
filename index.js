@@ -10,7 +10,7 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '0.0.1'
+    version = '0.0.5' // synchronize with package.json
     testFileName
     fileNameIn
     generateFiles
@@ -40,7 +40,8 @@ class TestScriptGenerator {
 
         this.fileNameIn = moduleName;
         this.testFileName = this.testScriptsPath + this.fileNameIn + fileSuffix;
-        fs.rm(this.testFileName, () => { });
+        fs.rm(this.testFileName, () => { }); // remove file if exists
+        saveHeader(this);
         fs.appendFileSync(this.testFileName, '// import "regenerator-runtime/runtime";' + '\n');
         fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
     }
@@ -148,6 +149,17 @@ module.exports = {
     TestScriptGenerator
 }
 
+const saveHeader = (m) => {
+    fs.appendFileSync(m.testFileName,
+        '/* \n'
+        + '   Script generated automatically from the NPM unit-test-script-generator package.' + '\n\n'
+        + '   Package version: ' + m.version + '\n'
+        + '   Test framework: ' + m.testFramework + '\n'
+        + '   Tested module: ' + m.fileNameIn + '\n'
+        + '   Date of file generation: ' + new Date(Date.now()).toLocaleString() + '\n'
+        + '*/ \n\n'
+    );
+}
 /**
  * Prepare function arguments and name
  * @param {array} argsLocal Array of arguments to call function 

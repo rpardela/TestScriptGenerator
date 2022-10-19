@@ -1,6 +1,6 @@
 {
   "name": "unit-test-script-generator",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Test script generator allows you to generate files containing unit test scripts",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "unit",
     "tests",
     "script",
-    "generator"
+    "generator",
+    "TestScriptGenerator"
   ],
   "author": "Robert Pardela <[rpardela@gmail.com](mailto:rpardela@gmail.com)>",
   "license": "MIT",
