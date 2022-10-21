@@ -138,16 +138,16 @@ test("test function eqFuncObj", () => {
 
 # <br>Problems
 
-This is the early version of the project and although it has been tested you are likely to encounter problems.
-Let me know if you encounter any problems other than those described below.
+This is the early version of the project and although it has been tested you are likely to encounter problems. <br>
+Let me know if you encounter any problems other than those described below or have ideas for changes to the module (<a href="mailto:testscriptgenerator@gmail.com">testscriptgenerator@</a>).
 
 Some of them are described here:
 
 1. Sometimes you need to bind a function to a module e.g:
 
 ```
-   const funcToCall = libToTest.sumFunc; <br>
-   const funcBinded = funcToCall.bind(libToTest);<br>
+   const funcToCall = libToTest.sumFunc;
+   const funcBinded = funcToCall.bind(libToTest);
    await tg.generateTestForFunc(funcBinded, 1, 3);
 ```
 
