@@ -10,13 +10,14 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '0.0.6' // synchronize with package.json
+    version = '0.0.7' // synchronize with package.json
     testFileName
     fileNameIn
     generateFiles
     testScriptsPath
     modulePath
     testFramework
+    describeID
     /**
      * Generate file with unit test script
      * result file name: moduleName + .timestamp + .test.js, eg: libToTest.1666085133268.test.js
@@ -28,6 +29,7 @@ class TestScriptGenerator {
      */
     constructor(generateFiles, moduleName, options = null) {
         this.generateFiles = generateFiles;
+        this, this.describeID = uuid(10);
         if (!this.generateFiles) { return }
 
         this.testScriptsPath = (options?.testScriptsPath) ? options.testScriptsPath : defaultTestScriptsPath
@@ -44,6 +46,8 @@ class TestScriptGenerator {
         saveHeader(this);
         fs.appendFileSync(this.testFileName, '// import "regenerator-runtime/runtime";' + '\n');
         fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
+        fs.appendFileSync(this.testFileName, '// describeID: ' + this.describeID + '\n');
+        fs.appendFileSync(this.testFileName, 'describe("Tests for module: ' + moduleName + '", () => {' + '\n');
     }
 
     /**
@@ -65,12 +69,13 @@ class TestScriptGenerator {
         if (this.testFramework === JEST_PROVIDER) {
             let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = 'test("' + comment + '", () => { \n'
-                + 'expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
-                + '});' + '\n\n';
+            ret = '  test("' + comment + '", () => { \n'
+                + '    expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
+                + '  });' + '\n\n';
         }
 
         fs.appendFileSync(this.testFileName, ret);
+        setFinishDescribe(this.testFileName, this.describeID);
         return resultOrg;
     }
 
@@ -95,10 +100,10 @@ class TestScriptGenerator {
         if (this.testFramework === JEST_PROVIDER) {
             let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = 'test("' + comment + '", async () => {\n'
-                + ' await expect(' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
-                + '.resolves.' + matcher + '(' + result + ');\n'
-                + '});' + '\n\n';
+            ret = '  test("' + comment + '", async () => {\n'
+                + '     await expect(' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
+                + '    .resolves.' + matcher + '(' + result + ');\n'
+                + '  });' + '\n\n';
         }
 
         fs.appendFileSync(this.testFileName, ret);
@@ -129,11 +134,11 @@ class TestScriptGenerator {
         if (this.testFramework === JEST_PROVIDER) {
             let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = 'test("' + comment + '", async () => { \n'
-                + 'expect.assertions(1); \n'
-                + 'return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
-                + '.catch(e => expect(JSON.parse(JSON.stringify(e))).' + matcher + '(' + result + '));\n'
-                + '});' + '\n\n';
+            ret = '  test("' + comment + '", async () => { \n'
+                + '    expect.assertions(1); \n'
+                + '    return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
+                + '    .catch(e => expect(JSON.parse(JSON.stringify(e))).' + matcher + '(' + result + '));\n'
+                + '  });' + '\n\n';
         }
 
         fs.appendFileSync(this.testFileName, ret);
@@ -184,7 +189,7 @@ const prepareArguments = (argsLocal, generateFiles, testFileName) => {
                 let itemObjectDef;
                 let objName = 'obj_' + uuid(10);
                 let objTest = item;
-                itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
+                itemObjectDef = '  const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
                 fs.appendFileSync(testFileName, itemObjectDef + '\n');
                 toPass += objName;
             } else {
@@ -223,7 +228,7 @@ const prepareResult = (resultOrg, testFileName) => {
         let itemObjectDef;
         let objName = 'resObject_' + uuid(10);
         let objTest = resultOrg;
-        itemObjectDef = 'const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
+        itemObjectDef = '  const ' + objName + ' = ' + JSON.stringify(objTest) + ';'
         fs.appendFileSync(testFileName, itemObjectDef + '\n');
         result = objName;
     } else {
@@ -231,6 +236,33 @@ const prepareResult = (resultOrg, testFileName) => {
         result = resultOrg;
     }
     return { resultType: resultType, result: result }
+}
+
+/**
+ * Set finish code for describe
+ * @param {string} testFileName 
+ * @param {string} describeID 
+ */
+const setFinishDescribe = (testFileName, describeID) => {
+    fs.readFile(testFileName, 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        let result = '';
+        let dataArr = data.split('\n');
+        dataArr.map((line) => {
+            if (!line.includes('[' + describeID + ']')) {
+                result += line + '\n';
+                // if (line !== '') {
+                //     result += '\n';
+                // }
+            }
+        })
+        result += '});// describeID[' + describeID + ']' + '\n';
+        fs.writeFile(testFileName, result.toString(), 'utf8', function (err) {
+            if (err) return console.log(err);
+        });
+    });
 }
 
 const uuid = (len) => {
