@@ -2,6 +2,7 @@
 const fs = require('fs');
 
 const JEST_PROVIDER = 'jest';
+const MOCHA_PROVIDER = 'mocha';
 
 let fileSuffix = '.' + Date.now() + '.test.js';
 let defaultTestScriptsPath = './testScripts/';
@@ -10,7 +11,7 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '0.0.7' // synchronize with package.json
+    version = '1.0.0' // synchronize with package.json
     testFileName
     fileNameIn
     generateFiles
@@ -45,6 +46,9 @@ class TestScriptGenerator {
         fs.rm(this.testFileName, () => { }); // remove file if exists
         saveHeader(this);
         fs.appendFileSync(this.testFileName, '// import "regenerator-runtime/runtime";' + '\n');
+        if (this.testFramework === MOCHA_PROVIDER) {
+            fs.appendFileSync(this.testFileName, 'const expect = require("chai").expect;' + '\n');
+        }
         fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
         fs.appendFileSync(this.testFileName, '// describeID: ' + this.describeID + '\n');
         fs.appendFileSync(this.testFileName, 'describe("Tests for module: ' + moduleName + '", () => {' + '\n');
@@ -66,12 +70,24 @@ class TestScriptGenerator {
         let comment = 'test function ' + name;
 
         let ret = '';
-        if (this.testFramework === JEST_PROVIDER) {
-            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+        let matcher;
+        switch (this.testFramework) {
+            case JEST_PROVIDER:
+                matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = '  test("' + comment + '", () => { \n'
-                + '    expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
-                + '  });' + '\n\n';
+                ret = '  test("' + comment + '", () => { \n'
+                    + '    expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
+                    + '  });' + '\n\n';
+                break;
+            case MOCHA_PROVIDER:
+                matcher = (resultType === 'object') ? 'to.deep.equal' : 'to.equal';
+
+                ret = '  it("' + comment + '", () => { \n'
+                    + '    expect(' + this.fileNameIn + '.' + name + '(' + toPass + ')).' + matcher + '(' + result + ');\n'
+                    + '  });' + '\n\n';
+                break;
+            default:
+                break;
         }
 
         fs.appendFileSync(this.testFileName, ret);
@@ -90,20 +106,33 @@ class TestScriptGenerator {
         if (!this.generateFiles) { return await arguments[0](...args); } // return original result
 
         let resultOrgTmp = await arguments[0](...args);
-        let resultOrg = { result: resultOrgTmp };
+        let resultOrg = resultOrgTmp;//{ result: resultOrgTmp };
 
         let { resultType, result } = prepareResult(resultOrg, this.testFileName);
 
         let comment = 'async test function resolve ' + name;
 
         let ret = '';
-        if (this.testFramework === JEST_PROVIDER) {
-            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+        let matcher;
+        switch (this.testFramework) {
+            case JEST_PROVIDER:
+                matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = '  test("' + comment + '", async () => {\n'
-                + '     await expect(' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
-                + '    .resolves.' + matcher + '(' + result + ');\n'
-                + '  });' + '\n\n';
+                ret = '  test("' + comment + '", async () => {\n'
+                    + '     await expect(' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
+                    + '    .resolves.' + matcher + '(' + result + ');\n'
+                    + '  });' + '\n\n';
+                break;
+            case MOCHA_PROVIDER:
+                matcher = (resultType === 'object') ? 'to.deep.equal' : 'to.equal';
+
+                ret = '  it("' + comment + '", async () => {\n'
+                    + '     expect(await ' + this.fileNameIn + '.' + name + '(' + toPass + '))\n'
+                    + '    .' + matcher + '(' + result + ');\n'
+                    + '  });' + '\n\n';
+                break;
+            default:
+                break;
         }
 
         fs.appendFileSync(this.testFileName, ret);
@@ -131,14 +160,27 @@ class TestScriptGenerator {
         let comment = 'async test function reject ' + name;
 
         let ret = '';
-        if (this.testFramework === JEST_PROVIDER) {
-            let matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
+        let matcher;
+        switch (this.testFramework) {
+            case JEST_PROVIDER:
+                matcher = (resultType === 'object') ? 'toEqual' : 'toBe';
 
-            ret = '  test("' + comment + '", async () => { \n'
-                + '    expect.assertions(1); \n'
-                + '    return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
-                + '    .catch(e => expect(JSON.parse(JSON.stringify(e))).' + matcher + '(' + result + '));\n'
-                + '  });' + '\n\n';
+                ret = '  test("' + comment + '", async () => { \n'
+                    + '    expect.assertions(1); \n'
+                    + '    return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
+                    + '    .catch(e => expect(JSON.parse(JSON.stringify(e))).' + matcher + '(' + result + '));\n'
+                    + '  });' + '\n\n';
+                break;
+            case MOCHA_PROVIDER:
+                matcher = (resultType === 'object') ? 'to.deep.equal' : 'to.equal';
+
+                ret = '  it("' + comment + '", async () => { \n'
+                    + '    return ' + this.fileNameIn + '.' + name + '(' + toPass + ')\n'
+                    + '    .catch(e => expect(JSON.parse(JSON.stringify(e))).' + matcher + '(' + result + '));\n'
+                    + '  });' + '\n\n';
+                break;
+            default:
+                break;
         }
 
         fs.appendFileSync(this.testFileName, ret);

@@ -21,8 +21,8 @@ Currently, only the "jest" framework is supported.
    **config** - You can specify an optional configuration as the third parameter of the call:<br>
    _testScriptPath_ - path to the folder where the test scripts will be saved<br>
    _modulePath_ - path to the location where the module whose functions you will test is located<br>
-   _testFramework_ - framework that supports unit tests (currently only 'jest')<br>
-   e.g.:<br> `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testScriptPath: './testScripts/', modulePath: '../core/'});`
+   _testFramework_ - framework that supports unit tests (currently 'jest' and 'mocha'). For 'mocha' you should also have chai installed<br>
+   e.g.:<br> `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testFramework: 'mocha', testScriptPath: './test/', modulePath: '../core/'});`
 
 3. Call the function for which you want to generate a unit test: <br>
    example typical function call <br>
@@ -42,7 +42,7 @@ Currently, only the "jest" framework is supported.
 4. Run js file with test generator<br>
    `node demo.js`
 
-   After running, you will get a new ....test.js file in the ./testScripts directory
+   After running, you will get a new ....test.js file in the _testScriptPath_ directory
 
 # <br>Example
 
@@ -59,7 +59,8 @@ const testGenerator = require('unit-test-script-generator');
 const libToTest = require('./libtoTest.js');
 
 console.log('START DEMO');
-const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');
+const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', { testFramework: 'mocha', testScriptsPath: './test/' }); // mocha&chai script
+//const tg = new testGenerator.TestScriptGenerator(true, 'libToTest'); // jest script
 tg.generateTestForFunc(libToTest.sumFunc, 1, 3);
 tg.generateTestForFunc(libToTest.multiplyFunc, 1, 3);
 tg.generateTestForFunc(libToTest.eqFunc, 2, 3);
@@ -67,6 +68,8 @@ tg.generateTestForFunc(libToTest.eqFunc, 3, 3);
 tg.generateTestForFunc(libToTest.eqFunc, "string1", "string1");
 tg.generateTestForFunc(libToTest.eqFunc, { id: 1, name: "ala" }, { id: 1, name: "ala" });
 tg.generateTestForFunc(libToTest.eqFuncObj, { id: 1, name: "ala" }, { id: 2, name: "ela" });
+tg.generateTestForFuncAsyncResolve(libToTest.promiseResolveFunc, { id: 1, name: "ala" }, { id: 2, name: "ela" });
+tg.generateTestForFuncAsyncReject(libToTest.promiseRejectFunc, { id: 1, name: "ala" }, { id: 2, name: "ela" });
 console.log('FINISH DEMO');
 ```
 
@@ -89,30 +92,44 @@ const eqFuncObj = (a, b) => {
     return { result: a === b, name: 'eqFuncObj' };
 }
 
+const promiseResolveFunc = (a, b) => {
+    return new Promise((resolve, reject) => {
+        resolve('promiseResolveFunc')
+    })
+}
+
+const promiseRejectFunc = (a, b) => {
+    return new Promise((resolve, reject) => {
+        reject('promiseRejectFunc')
+    })
+}
+
 module.exports = {
     sumFunc,
     multiplyFunc,
     eqFunc,
-    eqFuncObj
+    eqFuncObj,
+    promiseResolveFunc,
+    promiseRejectFunc
 }
 ```
 
-<br>**Result (generated script)**
+<br>**Result (generated script) for JEST framework**
 
 ```
 /*
    Script generated automatically from the NPM unit-test-script-generator package.
 
-   Package version: 0.0.7
+   Package version: 1.0.0
    Test framework: jest
    Tested module: libToTest
-   Date of file generation: 10/22/2022, 12:28:24 PM
+   Date of file generation: 10/31/2022, 11:56:39 AM
 */
 
 // import "regenerator-runtime/runtime";
 const libToTest = require("../libToTest");
 
-// describeID: uvxei8dgd
+// describeID: gc9vad6gw
 describe("Tests for module: libToTest", () => {
   test("test function sumFunc", () => {
     expect(libToTest.sumFunc(1, 3)).toBe(4);
@@ -134,20 +151,35 @@ describe("Tests for module: libToTest", () => {
     expect(libToTest.eqFunc("string1", "string1")).toBe(true);
   });
 
-  const obj_2tfvy5jy5 = {"id":1,"name":"ala"};
-  const obj_63br394v2 = {"id":1,"name":"ala"};
+  const obj_lqa57528n = {"id":1,"name":"ala"};
+  const obj_3nlgmf8o8 = {"id":1,"name":"ala"};
   test("test function eqFunc", () => {
-    expect(libToTest.eqFunc(obj_2tfvy5jy5, obj_63br394v2)).toBe(false);
+    expect(libToTest.eqFunc(obj_lqa57528n, obj_3nlgmf8o8)).toBe(false);
   });
 
-  const obj_9oh7vblx1 = {"id":1,"name":"ala"};
-  const obj_a6cur57z8 = {"id":2,"name":"ela"};
-  const resObject_v5u402udi = {"result":false,"name":"eqFuncObj"};
+  const obj_dczqk7p0k = {"id":1,"name":"ala"};
+  const obj_ogorda28p = {"id":2,"name":"ela"};
+  const resObject_rwhbdckmr = {"result":false,"name":"eqFuncObj"};
   test("test function eqFuncObj", () => {
-    expect(libToTest.eqFuncObj(obj_9oh7vblx1, obj_a6cur57z8)).toEqual(resObject_v5u402udi);
+    expect(libToTest.eqFuncObj(obj_dczqk7p0k, obj_ogorda28p)).toEqual(resObject_rwhbdckmr);
   });
 
-});// describeID[uvxei8dgd]
+  const obj_dhncv82um = {"id":1,"name":"ala"};
+  const obj_9fj7u95a4 = {"id":2,"name":"ela"};
+  const obj_mfkyr4vp1 = {"id":1,"name":"ala"};
+  const obj_l3bh247ff = {"id":2,"name":"ela"};
+  test("async test function resolve promiseResolveFunc", async () => {
+     await expect(libToTest.promiseResolveFunc(obj_dhncv82um, obj_9fj7u95a4))
+    .resolves.toBe("promiseResolveFunc");
+  });
+
+  test("async test function reject promiseRejectFunc", async () => {
+    expect.assertions(1);
+    return libToTest.promiseRejectFunc(obj_mfkyr4vp1, obj_l3bh247ff)
+    .catch(e => expect(JSON.parse(JSON.stringify(e))).toBe("promiseRejectFunc"));
+  });
+
+});// describeID[gc9vad6gw]
 ```
 
 # <br>Problems
