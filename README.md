@@ -1,7 +1,7 @@
 # Description
 
 Test script generator allows you to generate files containing unit test scripts.
-Currently, only the "jest" framework is supported.
+Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
 
 # <br>Installation
 
