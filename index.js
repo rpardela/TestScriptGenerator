@@ -11,7 +11,7 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '1.0.0' // synchronize with package.json
+    version = '1.0.1' // synchronize version with package.json
     testFileName
     fileNameIn
     generateFiles
@@ -19,6 +19,7 @@ class TestScriptGenerator {
     modulePath
     testFramework
     describeID
+
     /**
      * Generate file with unit test script
      * result file name: moduleName + .timestamp + .test.js, eg: libToTest.1666085133268.test.js
@@ -30,7 +31,8 @@ class TestScriptGenerator {
      */
     constructor(generateFiles, moduleName, options = null) {
         this.generateFiles = generateFiles;
-        this, this.describeID = uuid(10);
+        //this, this.describeID = uuid(10);
+        this.describeID = uuid(10);
         if (!this.generateFiles) { return }
 
         this.testScriptsPath = (options?.testScriptsPath) ? options.testScriptsPath : defaultTestScriptsPath
@@ -312,25 +314,10 @@ const uuid = (len) => {
     const max = Math.floor(999999999);
 
     let uid = (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
-    uid = uid + (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
 
-    let uuid = uid.substring(1, len);
+    do {
+        uid += (Math.floor(Math.random() * (max - min + 1)) + min).toString(36);
+    } while (uid.length < len);
 
-    return uuid;
+    return uid.substring(1, len);
 }

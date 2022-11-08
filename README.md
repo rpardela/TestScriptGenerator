@@ -1,13 +1,27 @@
 # Description
 
-Test script generator allows you to generate files containing unit test scripts.
-Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
+Performing unit tests of your code is very important. At the same time, creating unit test scripts is quite tedious and there is usually not enough time for it.
+
+This test script generator allows you to automatically generate files containing unit test scripts using minimal effort.
+
+You can insert the generator configuration at the place of the actual function calls you want to test. The generator will use the real values as test parameters and match the unit tests to their type.
+
+You can also use this generator to mock unit tests.
+
+Currently, only the "is" and "mocha" (with "chai") frameworks are supported.
+
+# <br> Prerequisites
+
+This library generates unit test scripts. These scripts will be used when running unit tests in your project.
+Remember to install and configure your favorite testing framework ("jest" or "mocha & chai") in your enviroment.
 
 # <br>Installation
 
 `npm -i "unit-test-script-generator"`
 
 # <br>Usage
+
+Create a new generator file (similar to the demo.js file presented in the following section), and then edit this file according to the list below.<br>
 
 1. Import the library:<br>
    `const testGenerator = require('unit-test-script-generator')`
@@ -16,13 +30,29 @@ Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
    `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');`<br>
 
    **parameters:** <br>
-   _generateFiles_ - false if the result file should not be generated.<br>
+   _generateFiles_ - false if the result file should not be generated. Sometimes you may not want to generate test scripts for certain libraries. Instead of removing them from the generator file, maybe set this parameter to false.<br>
    _moduleName_ - module where are located tested functions<br>
-   **config** - You can specify an optional configuration as the third parameter of the call:<br>
+   <br>**config** - You can specify an optional configuration as the third parameter of the call:<br>
    _testScriptPath_ - path to the folder where the test scripts will be saved<br>
    _modulePath_ - path to the location where the module whose functions you will test is located<br>
-   _testFramework_ - framework that supports unit tests (currently 'jest' and 'mocha'). For 'mocha' you should also have chai installed<br>
-   e.g.:<br> `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testFramework: 'mocha', testScriptPath: './test/', modulePath: '../core/'});`
+   _testFramework_ - framework that supports unit tests (currently 'jest' and 'mocha', for 'mocha' you should also have chai installed).<br>
+   <br>Optional configuration example:<br> `const tg = new testGenerator.TestScriptGenerator(true, 'libToTest', {testFramework: 'mocha', testScriptPath: './test/', modulePath: '../core/'});`
+   <br><br>
+   You can simultaneously initialize multiple generators for different libraries, for example:
+
+   ```
+   const tg = new testGenerator.TestScriptGenerator(true, 'libToTest');
+   const tg2 = new testGenerator.TestScriptGenerator(true, 'libToTest2');
+   const tg3 = new testGenerator.TestScriptGenerator(true, 'libToTest3');
+
+   tg.generateTestForFunc(libToTest.sumFunc, 1, 3);
+   tg2.generateTestForFunc(libToTest.multiplyFunc, 1, 3);
+   tg3.generateTestForFunc(libToTest.eqFunc, 2, 3);
+   ```
+
+   The above code will create 3 unit test files (as long as you have libraries: libToTest, libToTest2, libToTest3).
+
+      <br>
 
 3. Call the function for which you want to generate a unit test: <br>
    example typical function call <br>
@@ -37,7 +67,7 @@ Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
    example call: <br>
    `await tg.generateTestForFuncAsyncResolve(libToTest.sumFunc, 1, 3);`
 
-   The functions that generate scripts (generateTestForFunc + Async) always return values like the original (tested) functions. This allows you to permanently define script generation, and if you don't need scripts then set the 'generateFiles' parameter to **false**
+   Important: The functions that generate scripts (generateTestForFunc + Async) always return values like the original (tested) functions. This allows you to permanently define script generation, and if you don't need to generate scripts then set the 'generateFiles' parameter to **false**
 
 4. Run js file with test generator<br>
    `node demo.js`
@@ -197,8 +227,7 @@ Some of them are described here:
    await tg.generateTestForFunc(funcBinded, 1, 3);
 ```
 
-2. Sometimes you will have to make changes to the test scripts and supplement it with, for example, initialization of the libraries you use.
-   For example, if a 'yourLib' library requires the init function to be called before running other functions, you must take care of this in your test scripts.<br>
+2. Sometimes you will have to make changes to your test scripts and supplement them with initialization of the libraries you use, for example. For example, if the library "yourLib" requires the init function to be called before running other functions, you will need to take care of this in your test scripts (check how to perform this correctly in your favorite testing framework).<br>
    `yourLib.init();` <br>
 
    and now test scripts <br>
@@ -208,4 +237,4 @@ Some of them are described here:
 
 4. In case of problems, you can always manually modify the generated test scenarios. You can use them just as a template.
 
-5. Make sure that the framework 'jest' looking for test scripts in the ./testScripts folder (or any other folder you jump in the configuration)
+5. Make sure that the framework 'jest' looking for test scripts in the ./testScripts folder (or any other folder you set in the configuration)
