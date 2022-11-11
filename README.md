@@ -8,7 +8,7 @@ You can insert the generator configuration at the place of the actual function c
 
 You can also use this generator to mock unit tests.
 
-Currently, only the "is" and "mocha" (with "chai") frameworks are supported.
+Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
 
 # <br> Prerequisites
 
