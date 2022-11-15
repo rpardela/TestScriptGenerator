@@ -1,5 +1,5 @@
 'use strict';
-const fs = require('fs');
+import fs from 'fs';
 
 const JEST_PROVIDER = 'jest';
 const MOCHA_PROVIDER = 'mocha';
@@ -11,7 +11,7 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '1.0.2' // synchronize version with package.json
+    version = '1.1.0' // synchronize version with package.json
     testFileName
     fileNameIn
     generateFiles
@@ -49,9 +49,11 @@ class TestScriptGenerator {
         saveHeader(this);
         fs.appendFileSync(this.testFileName, '// import "regenerator-runtime/runtime";' + '\n');
         if (this.testFramework === MOCHA_PROVIDER) {
-            fs.appendFileSync(this.testFileName, 'const expect = require("chai").expect;' + '\n');
+            //fs.appendFileSync(this.testFileName, 'const expect = require("chai").expect;' + '\n');
+            fs.appendFileSync(this.testFileName, 'import { expect } from "chai";' + '\n');
         }
-        fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
+        // fs.appendFileSync(this.testFileName, 'const ' + moduleName + ' = require("' + this.modulePath + moduleName + '");' + '\n\n');
+        fs.appendFileSync(this.testFileName, 'import ' + moduleName + ' from "' + this.modulePath + moduleName + '.js";' + '\n\n');
         fs.appendFileSync(this.testFileName, '// describeID: ' + this.describeID + '\n');
         fs.appendFileSync(this.testFileName, 'describe("Tests for module: ' + moduleName + '", () => {' + '\n');
     }
@@ -194,7 +196,7 @@ class TestScriptGenerator {
     }
 }
 
-module.exports = {
+export {
     TestScriptGenerator
 }
 
@@ -205,6 +207,7 @@ const saveHeader = (m) => {
         + '   Package version: ' + m.version + '\n'
         + '   Test framework: ' + m.testFramework + '\n'
         + '   Tested module: ' + m.fileNameIn + '\n'
+        + '   ES6: ' + 'True' + '\n'
         + '   Date of file generation: ' + new Date(Date.now()).toLocaleString() + '\n'
         + '*/ \n\n'
     );

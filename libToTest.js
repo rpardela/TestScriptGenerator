@@ -26,7 +26,16 @@ const promiseRejectFunc = (a, b) => {
     })
 }
 
-module.exports = {
+export default {
+    sumFunc,
+    multiplyFunc,
+    eqFunc,
+    eqFuncObj,
+    promiseResolveFunc,
+    promiseRejectFunc
+}
+
+export {
     sumFunc,
     multiplyFunc,
     eqFunc,

@@ -1,17 +1,18 @@
 /* 
    Script generated automatically from the NPM unit-test-script-generator package.
 
-   Package version: 1.0.0
+   Package version: 1.1.0
    Test framework: mocha
    Tested module: libToTest
-   Date of file generation: 10/31/2022, 12:26:52 PM
+   ES6: True
+   Date of file generation: 11/15/2022, 12:09:14 PM
 */ 
 
 // import "regenerator-runtime/runtime";
-const expect = require("chai").expect;
-const libToTest = require("../libToTest");
+import { expect } from "chai";
+import libToTest from "../libToTest.js";
 
-// describeID: o0w7o4zhx
+// describeID: dg11xe6h7
 describe("Tests for module: libToTest", () => {
   it("test function sumFunc", () => { 
     expect(libToTest.sumFunc(1, 3)).to.equal(4);
@@ -33,32 +34,32 @@ describe("Tests for module: libToTest", () => {
     expect(libToTest.eqFunc("string1", "string1")).to.equal(true);
   });
 
-  const obj_f5w9w773h = {"id":1,"name":"ala"};
-  const obj_97w793et4 = {"id":1,"name":"ala"};
+  const obj_b89bq47d6 = {"id":1,"name":"ala"};
+  const obj_vhzh1bpdw = {"id":1,"name":"ala"};
   it("test function eqFunc", () => { 
-    expect(libToTest.eqFunc(obj_f5w9w773h, obj_97w793et4)).to.equal(false);
+    expect(libToTest.eqFunc(obj_b89bq47d6, obj_vhzh1bpdw)).to.equal(false);
   });
 
-  const obj_yax8teslb = {"id":1,"name":"ala"};
-  const obj_7h9t72rde = {"id":2,"name":"ela"};
-  const resObject_orhqr9ug0 = {"result":false,"name":"eqFuncObj"};
+  const obj_bqoig3r6c = {"id":1,"name":"ala"};
+  const obj_bfhejf3tg = {"id":2,"name":"ela"};
+  const resObject_eb302a7fs = {"result":false,"name":"eqFuncObj"};
   it("test function eqFuncObj", () => { 
-    expect(libToTest.eqFuncObj(obj_yax8teslb, obj_7h9t72rde)).to.deep.equal(resObject_orhqr9ug0);
+    expect(libToTest.eqFuncObj(obj_bqoig3r6c, obj_bfhejf3tg)).to.deep.equal(resObject_eb302a7fs);
   });
 
-  const obj_xnkpo6hqb = {"id":1,"name":"ala"};
-  const obj_1r7sm5iay = {"id":2,"name":"ela"};
-  const obj_5vxv3d08h = {"id":1,"name":"ala"};
-  const obj_tphd986wa = {"id":2,"name":"ela"};
+  const obj_atx7k4598 = {"id":1,"name":"ala"};
+  const obj_ni7r56na0 = {"id":2,"name":"ela"};
+  const obj_iz4rb91sm = {"id":1,"name":"ala"};
+  const obj_8y5zu83tt = {"id":2,"name":"ela"};
   it("async test function resolve promiseResolveFunc", async () => {
-     expect(await libToTest.promiseResolveFunc(obj_xnkpo6hqb, obj_1r7sm5iay))
+     expect(await libToTest.promiseResolveFunc(obj_atx7k4598, obj_ni7r56na0))
     .to.equal("promiseResolveFunc");
   });
 
   it("async test function reject promiseRejectFunc", async () => { 
-    return libToTest.promiseRejectFunc(obj_5vxv3d08h, obj_tphd986wa)
+    return libToTest.promiseRejectFunc(obj_iz4rb91sm, obj_8y5zu83tt)
     .catch(e => expect(JSON.parse(JSON.stringify(e))).to.equal("promiseRejectFunc"));
   });
 
 
-});// describeID[o0w7o4zhx]
+});// describeID[dg11xe6h7]
