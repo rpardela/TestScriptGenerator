@@ -11,7 +11,7 @@ let defaultTestFramework = JEST_PROVIDER;
 
 class TestScriptGenerator {
     name = 'TestScriptGenerator'
-    version = '1.1.0' // synchronize version with package.json
+    version = '1.1.1' // synchronize version with package.json
     testFileName
     fileNameIn
     generateFiles

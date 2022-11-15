@@ -19,7 +19,7 @@ Remember to install and configure your favorite testing framework ("jest" or "mo
 
 # <br>Installation
 
-`npm -i "unit-test-script-generator"`
+`npm i unit-test-script-generator`
 
 # <br>Usage
 

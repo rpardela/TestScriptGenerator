@@ -1,6 +1,6 @@
 {
   "name": "unit-test-script-generator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Unit test script generator allows you to generate files containing unit test scripts for popular testing frameworks",
   "main": "index.js",
   "type": "module",
