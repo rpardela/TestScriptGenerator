@@ -19,7 +19,8 @@
     "chai",
     "script",
     "generator",
-    "TestScriptGenerator"
+    "TestScriptGenerator",
+    "ES6"
   ],
   "author": "Robert Pardela <[rpardela@gmail.com](mailto:rpardela@gmail.com)>",
   "license": "MIT",
