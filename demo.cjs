@@ -1,5 +1,5 @@
 (async function () {
-    const testGenerator = await import('./unit-test-script-generator');//import('unit-test-script-generator');// or import('./index.js') for development
+    const testGenerator = await import('unit-test-script-generator');//import('unit-test-script-generator');// or import('./index.js') for development
     const libToTest = await import('./libtoTest.js');
 
     console.log('START DEMO');

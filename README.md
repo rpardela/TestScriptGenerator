@@ -10,7 +10,7 @@ You can also use this generator to mock unit tests.
 
 Currently, only the "jest" and "mocha" (with "chai") frameworks are supported.
 
-<br> Important!!! As of version 1.1.0, this project is compatible with ES6. If you have a problem with the configuration of your 'jest' test framework read the problems section.
+<br> **Important!!!** As of version 1.1.0, this project is compatible with ES6. If you have a problem with the configuration of your 'jest' test framework read the Problems section.
 
 # <br> Prerequisites
 
@@ -88,7 +88,7 @@ Now you can run unit tests with the "jest" command.
 
 ```
 (async function () {
-    const testGenerator = await import('./unit-test-script-generator');//import('unit-test-script-generator');// or import('./index.js') for development
+    const testGenerator = await import('unit-test-script-generator');//import('unit-test-script-generator');// or import('./index.js') for development
     const libToTest = await import('./libtoTest.js');
 
     console.log('START DEMO');
