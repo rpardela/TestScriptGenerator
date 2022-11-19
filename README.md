@@ -253,3 +253,7 @@ Some of them are described here:
 5. In case of problems, you can always manually modify the generated test scenarios. You can use them just as a template.
 
 6. Make sure that the framework 'jest' looking for test scripts in the ./testScripts folder (or any other folder you set in the configuration)
+
+# <br> Collaboration
+
+If you already have your public projects, have ideas for development and would like to develop this package then I encourage you to collaborate.
